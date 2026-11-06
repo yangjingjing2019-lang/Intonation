@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>普通話語調天機閣 - 雙重盲盒大抽獎</title>
+    <!-- 引入 Tailwind CSS 與 Google Fonts (思源宋體，極具東方韻味) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #f7f5ef;
+            background-image: radial-gradient(#e2dcce 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .ink-border {
+            border: 3px solid #2b2b2b;
+            box-shadow: 8px 8px 0px #2b2b2b;
+        }
+        /* 抽獎轉動與隆重登場動畫 */
+        @keyframes lotterySpin {
+            0% { opacity: 0; transform: scale(0.9) rotateX(15deg); filter: blur(6px); }
+            50% { filter: blur(2px); }
+            100% { opacity: 1; transform: scale(1) rotateX(0deg); filter: blur(0); }
+        }
+        .animate-lottery {
+            animation: lotterySpin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        /* 印章特效 */
+        .seal-stamp {
+            border: 2px solid #9e2a2b;
+            color: #9e2a2b;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="text-neutral-800 min-h-screen flex flex-col justify-between p-4 sm:p-8">
+
+    <!-- 頂部文人雅士標題區 -->
+    <header class="max-w-4xl mx-auto text-center py-4">
+        <div class="inline-block seal-stamp px-5 py-1.5 text-sm rounded mb-2 bg-red-50/50">
+            聲韻天機 · 雙重盲盒大抽獎
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black text-neutral-900 tracking-wider">
+            普通話語調 · 命運錦囊
+        </h1>
+        <p class="text-neutral-600 mt-2 text-sm sm:text-base tracking-widest">
+            —— 抽金句、盲抽語調，現場挑戰高級陰陽怪氣的演繹 ——
+        </p>
+    </header>
+
+    <!-- 主體互動區 -->
+    <main class="max-w-3xl w-full mx-auto flex-grow flex flex-col justify-center items-center my-4">
+        
+        <!-- 抽獎主面板 (未抽獎或待抽時顯示) -->
+        <div id="draw-panel" class="w-full bg-white ink-border rounded-2xl p-8 sm:p-14 text-center transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-8 -bottom-8 text-9xl text-neutral-100 font-black select-none pointer-events-none">
+                獎
+            </div>
+            
+            <div class="mb-8 relative z-10">
+                <div class="w-28 h-28 bg-[#9e2a2b] text-[#f7f5ef] rounded-full flex items-center justify-center mx-auto mb-6 text-5xl shadow-xl border-2 border-red-900">
+                    🏮
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-bold text-neutral-900 tracking-wide">雙重隨機盲盒，命運由您開啟</h2>
+                <p class="text-neutral-500 text-base sm:text-lg mt-3 tracking-wide">點擊下方按鈕，同時隨機抽取「金句」與「語調」！</p>
+            </div>
+            
+            <button onclick="startLottery()" id="lottery-btn" class="relative z-10 w-full sm:w-auto px-14 py-6 bg-neutral-900 hover:bg-neutral-800 text-[#f7f5ef] font-bold text-2xl rounded-xl shadow-2xl hover:shadow-xl transition-all transform active:scale-95 cursor-pointer tracking-widest border border-neutral-700">
+                <span>🎲 立即盲盒抽獎</span>
+            </button>
+        </div>
+
+        <!-- 抽獎揭曉大卡片區 (抽獎後顯示) -->
+        <div id="challenge-card" class="hidden w-full bg-white ink-border rounded-2xl p-8 sm:p-14 relative overflow-hidden transition-all duration-500 animate-lottery">
+            
+            <!-- 卡片頂部標籤與語調獨立點擊抽取區 -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 border-b-2 border-neutral-200 pb-6">
+                <div class="flex items-center gap-2">
+                    <span class="seal-stamp px-4 py-1 text-sm rounded bg-red-50">天機錦囊</span>
+                    <span class="text-sm text-neutral-500 tracking-wider font-bold">雙盲盒抽取結果</span>
+                </div>
+                <!-- 語調大徽章（點擊可單獨重新抽取語調！） -->
+                <div class="flex items-center gap-3">
+                    <div id="tone-badge" class="text-xl sm:text-2xl font-black px-6 py-3 rounded-2xl shadow-md tracking-wider transition-all"></div>
+                    <button onclick="drawToneOnly()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold px-4 py-3 rounded-xl border border-amber-300 shadow-sm transition-all cursor-pointer flex items-center gap-1">
+                        <span>🎲 換語調</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 抽中的句子展示 (超大字體呈現隆重感) -->
+            <div class="text-center my-10 px-4">
+                <span class="text-xs sm:text-sm text-neutral-400 uppercase tracking-[0.3em] font-semibold block mb-4">—— 抽中挑戰金句 ——</span>
+                <h3 id="sentence-text" class="text-3xl sm:text-6xl font-black text-neutral-900 tracking-tight leading-relaxed"></h3>
+            </div>
+
+            <!-- 老師教學提示與潛台詞解析 -->
+            <div class="bg-[#fcfbf9] border-l-8 border-[#9e2a2b] p-6 rounded-r-xl mb-10 text-left border-y border-r border-neutral-300 shadow-md">
+                <h4 class="text-sm font-bold text-[#9e2a2b] uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <span>💡</span> 老師教學指引 / 潛台詞解析
+                </h4>
+                <p id="tone-tip" class="text-base sm:text-lg text-neutral-700 leading-relaxed font-medium"></p>
+            </div>
+
+            <!-- 操作按鈕列 -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="completeChallenge()" class="flex-1 bg-[#9e2a2b] hover:bg-[#7c2122] text-[#f7f5ef] font-bold py-4 px-8 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer tracking-wider text-lg border border-red-900">
+                    <span>👏 演繹完美！給予掌聲與音效</span>
+                </button>
+                <button onclick="startLottery()" class="px-8 py-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-lg rounded-xl transition-all cursor-pointer tracking-wider border border-neutral-300">
+                    🔄 再抽一次雙盲盒
+                </button>
+            </div>
+        </div>
+
+        <!-- 成功鼓勵懸浮提示 -->
+        <div id="feedback-alert" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-neutral-900 text-[#f7f5ef] px-8 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 border border-neutral-700 transition-all animate-bounce">
+            <span class="text-2xl">✨</span>
+            <span id="feedback-text" class="font-bold text-base sm:text-lg tracking-wide">太精彩了！這陰陽怪氣的韻味拿捏得死死的！</span>
+        </div>
+
+    </main>
+
+    <!-- 底部題庫一覽 (方便老師隨時自由指定句子) -->
+    <footer class="max-w-4xl mx-auto w-full mt-8 bg-white/80 backdrop-blur ink-border rounded-2xl p-6 shadow-sm">
+        <h4 class="text-xs sm:text-sm font-bold text-neutral-500 uppercase tracking-widest mb-4 text-center">📜 題庫總覽與指定點選抽獎</h4>
+        <div id="manual-buttons" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+            <!-- 動態生成題目按鈕 -->
+        </div>
+    </footer>
+
+    <!-- 腳本邏輯 -->
+    <script>
+        // 當前抽中的句子與語調全局狀態
+        let currentSentenceIndex = 0;
+        let currentToneKey = 'winding';
+
+        // 4種語調定義庫（包含平調、降調、升調、曲折調）
+        const toneTemplates = {
+            flat: {
+                key: "flat",
+                name: "平調 (̄)",
+                badge: "bg-emerald-100 text-emerald-900 border-2 border-emerald-400",
+                getTip: (sentence) => `平鋪直敘地讀出「${sentence}」，語氣冷靜平穩，像是在進行客觀的陳述或中立的評價。`
+            },
+            falling: {
+                key: "falling",
+                name: "降調 (↘)",
+                badge: "bg-blue-100 text-blue-900 border-2 border-blue-400",
+                getTip: (sentence) => `語氣堅定、乾淨俐落地下沉。用來表達真誠的讚嘆、嚴肅的肯定，或是確定的結論。`
+            },
+            rising: {
+                key: "rising",
+                name: "升調 (↗)",
+                badge: "bg-purple-100 text-purple-900 border-2 border-purple-400",
+                getTip: (sentence) => `尾音揚起，充滿強烈的好奇、驚訝、反問或不確定的猜測語氣。`
+            },
+            winding: {
+                key: "winding",
+                name: "曲折調 (᷈)",
+                badge: "bg-red-100 text-red-900 border-2 border-red-500 font-black",
+                getTip: (sentence) => `【陰陽怪氣/反諷】波浪起伏、拖長音節。嘴裡說著好話，眼神和語調卻充滿明褒暗貶、冷嘲熱諷或翻白眼的意味。`
+            }
+        };
+
+        // 7個精選句子庫
+        const sentences = [
+            {
+                id: 1,
+                text: "真是讓人大開眼界啊。",
+                tips: {
+                    flat: "平調讀出「真是讓人大開眼界啊」，像是在作冷靜的記錄。",
+                    falling: "真心讚嘆見識到了新鮮厲害的事物，語氣平穩下降。",
+                    rising: "帶著強烈的好奇或質疑：「真的假的？有這麼誇張嗎？」",
+                    winding: "【陰陽怪氣】尾音拐彎拉長：今天真是見鬼了，沒見過這麼離譜的操作！"
+                }
+            },
+            {
+                id: 2,
+                text: "這麼難的事都會做。",
+                tips: {
+                    flat: "平調客觀敘述對方會做這件事的平實事實。",
+                    falling: "客觀肯定對方克服了巨大困難，完成艱巨任務。",
+                    rising: "驚訝反問：「這麽難的你竟然會做？太厲害了吧！」",
+                    winding: "【陰陽怪氣】明褒暗貶：這不是三歲小孩都會的基礎常識嗎？有什麼好炫耀的。"
+                }
+            },
+            {
+                id: 3,
+                text: "您的時間寶貴得很呢。",
+                tips: {
+                    flat: "客氣、禮貌、平穩地表達對對方行程的客觀尊重。",
+                    falling: "嚴肅認真地強調對方時間的重要性，語氣乾淨俐落。",
+                    rising: "帶著疑惑詢問：「您的時間……真的很寶貴嗎？」",
+                    winding: "【陰陽怪氣】冷嘲熱諷：架子真大、擺什麼譜啊！讓我們大家在這裡等你很有意思嗎？"
+                }
+            },
+            {
+                id: 4,
+                text: "這步棋走得真高明。",
+                tips: {
+                    flat: "平靜地評論這一步棋的客觀落子位置。",
+                    falling: "真心讚賞對方的決策與智慧，肯定其高超策略。",
+                    rising: "帶著疑惑詢問：「這步棋……真的高明嗎？我怎麼看不懂？」",
+                    winding: "【陰陽怪氣】反話諷刺：簡直是臭棋一盤、昏招迭出，把整局牌都砸爛了。"
+                }
+            },
+            {
+                id: 5,
+                text: "你可真了不起啊。",
+                tips: {
+                    flat: "平淡地陳述對方具備某種能力的客觀事實。",
+                    falling: "由衷佩服對方的成就，給予誠摯的誇獎與肯定。",
+                    rising: "驚訝與崇拜：「哇！你怎麼這麼厲害？」",
+                    winding: "【陰陽怪氣】調侃挖苦：尾巴都要翹到天上去了，我看你接下來怎麼收場！"
+                }
+            },
+            {
+                id: 6,
+                text: "大家都在努力向前衝，你怎麼好意思停滯不前呢？",
+                tips: {
+                    flat: "平鋪直敘地描述團體現狀與個人狀態的客觀對比。",
+                    falling: "嚴肅而語重心長地勸導對方跟上大家的步伐。",
+                    rising: "急切地反問：「大家都衝了，你怎麼還在原地？」",
+                    winding: "【陰陽怪氣】花式施壓：喲，就您最清高、最特別是吧？好意思賴著不動啊？"
+                }
+            },
+            {
+                id: 7,
+                text: "他怎麼可能不知道這件事呢。",
+                tips: {
+                    flat: "客觀分析他對該事件的知情機率。",
+                    falling: "篤定地斷言：「這件事他絕對一清二楚，別想裝傻。」",
+                    rising: "懷疑地追問：「難道他真的不知道這件事嗎？」",
+                    winding: "【陰陽怪氣】冷笑拆穿：裝得真無辜！明明內心比誰都清楚，還在這兒演戲呢。"
+                }
+            }
+        ];
+
+        const encouragements = [
+            "🎉 雙重盲盒神抽！這陰陽怪氣的韻味簡直爐火純青！",
+            "👏 運氣與實力兼具！表情與語調拿捏得恰到好處！",
+            "🌟 聲調起伏跌宕，盲盒抽獎完美過關！",
+            "🔥 抽到這組合簡直絕配，諷刺指數直接拉滿！",
+            "✨ 氣息流轉自然，不愧是天機閣認證的語調大師！"
+        ];
+
+        // 初始化手動按鈕
+        window.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('manual-buttons');
+            sentences.forEach((s, index) => {
+                const btn = document.createElement('button');
+                btn.className = "text-xs sm:text-sm bg-[#fcfbf9] hover:bg-neutral-900 hover:text-white text-neutral-800 font-medium py-2.5 px-3 rounded-xl transition-all truncate text-left border border-neutral-300 shadow-sm";
+                btn.innerHTML = `<span class="font-bold text-[#9e2a2b]">#${index+1}</span> ${s.text}`;
+                btn.onclick = () => loadSpecificSentence(index);
+                container.appendChild(btn);
+            });
+        });
+
+        // 隨機雙重抽獎（句子隨機 + 語調隨機）
+        function startLottery() {
+            const btn = document.getElementById('lottery-btn');
+            if(btn) btn.innerText = "🎲 雙重盲盒轉動中……";
+
+            currentSentenceIndex = Math.floor(Math.random() * sentences.length);
+            
+            const toneKeys = Object.keys(toneTemplates);
+            currentToneKey = toneKeys[Math.floor(Math.random() * toneKeys.length)];
+
+            playSpinSound();
+
+            setTimeout(() => {
+                renderCurrentChallenge();
+                if(btn) btn.innerText = "🎲 立即盲盒抽獎";
+            }, 600);
+        }
+
+        // 僅單獨重新抽取語調（點擊「換語調」按鈕）
+        function drawToneOnly() {
+            const toneKeys = Object.keys(toneTemplates);
+            // 隨機換一個不同的語調
+            let newToneKey;
+            do {
+                newToneKey = toneKeys[Math.floor(Math.random() * toneKeys.length)];
+            } while (newToneKey === currentToneKey && toneKeys.length > 1);
+
+            currentToneKey = newToneKey;
+            playSpinSound();
+            renderCurrentChallenge();
+        }
+
+        // 指定某一句子，但語調隨機
+        function loadSpecificSentence(index) {
+            currentSentenceIndex = index;
+            const toneKeys = Object.keys(toneTemplates);
+            currentToneKey = toneKeys[Math.floor(Math.random() * toneKeys.length)];
+
+            playSpinSound();
+            setTimeout(() => {
+                renderCurrentChallenge();
+            }, 300);
+        }
+
+        // 渲染當前狀態到畫面上
+        function renderCurrentChallenge() {
+            document.getElementById('draw-panel').classList.add('hidden');
+            const card = document.getElementById('challenge-card');
+            card.classList.remove('hidden');
+            
+            card.classList.remove('animate-lottery');
+            void card.offsetWidth;
+            card.classList.add('animate-lottery');
+
+            const s = sentences[currentSentenceIndex];
+            const tone = toneTemplates[currentToneKey];
+            const tip = s.tips[currentToneKey];
+
+            document.getElementById('sentence-text').innerText = `「${s.text}」`;
+            
+            const badge = document.getElementById('tone-badge');
+            badge.innerText = `抽中語調：${tone.name}`;
+            badge.className = `text-xl sm:text-2xl font-black px-6 py-3 rounded-2xl shadow-md tracking-wider transition-all ${tone.badge}`;
+
+            document.getElementById('tone-tip').innerText = tip;
+        }
+
+        // 播放 Web Audio API 抽獎滾動音效
+        function playSpinSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const playTone = (freq, time, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime + time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time + duration);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + time);
+                    osc.stop(ctx.currentTime + time + duration);
+                };
+
+                playTone(330, 0.0, 0.1);
+                playTone(440, 0.1, 0.1);
+                playTone(554, 0.2, 0.2);
+            } catch (e) {}
+        }
+
+        // 播放成功音效
+        function playSuccessSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const playTone = (freq, time, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time + duration);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + time);
+                    osc.stop(ctx.currentTime + time + duration);
+                };
+
+                playTone(587.33, 0.0, 0.25);
+                playTone(659.25, 0.12, 0.25);
+                playTone(880.00, 0.25, 0.5);
+            } catch (e) {}
+        }
+
+        // 完成挑戰與鼓勵提示
+        function completeChallenge() {
+            playSuccessSound();
+
+            const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
+            const alertBox = document.getElementById('feedback-alert');
+            document.getElementById('feedback-text').innerText = randomEncouragement;
+
+            alertBox.classList.remove('hidden');
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
