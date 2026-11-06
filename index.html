@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>普通話語調天機閣 - 雙重盲盒大抽獎</title>
+    <title>普通話語調天機閣 - 盲盒大抽獎</title>
     <!-- 引入 Tailwind CSS 與 Google Fonts (思源宋體，極具東方韻味) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -41,10 +41,10 @@
     <!-- 頂部文人雅士標題區 -->
     <header class="max-w-4xl mx-auto text-center py-4">
         <div class="inline-block seal-stamp px-5 py-1.5 text-sm rounded mb-2 bg-red-50/50">
-            聲韻天機 · 雙重盲盒大抽獎
+            普通話語調· 盲盒大抽獎
         </div>
         <h1 class="text-3xl sm:text-5xl font-black text-neutral-900 tracking-wider">
-            普通話語調 · 命運錦囊
+            普通話語調 · 表達錦囊
         </h1>
         <p class="text-neutral-600 mt-2 text-sm sm:text-base tracking-widest">
             —— 抽金句、盲抽語調，現場挑戰高級陰陽怪氣的演繹 ——
@@ -64,7 +64,7 @@
                 <div class="w-28 h-28 bg-[#9e2a2b] text-[#f7f5ef] rounded-full flex items-center justify-center mx-auto mb-6 text-5xl shadow-xl border-2 border-red-900">
                     🏮
                 </div>
-                <h2 class="text-2xl sm:text-4xl font-bold text-neutral-900 tracking-wide">雙重隨機盲盒，命運由您開啟</h2>
+                <h2 class="text-2xl sm:text-4xl font-bold text-neutral-900 tracking-wide">隨機盲盒，説話由您開啟</h2>
                 <p class="text-neutral-500 text-base sm:text-lg mt-3 tracking-wide">點擊下方按鈕，同時隨機抽取「金句」與「語調」！</p>
             </div>
             
@@ -79,8 +79,8 @@
             <!-- 卡片頂部標籤與語調獨立點擊抽取區 -->
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 border-b-2 border-neutral-200 pb-6">
                 <div class="flex items-center gap-2">
-                    <span class="seal-stamp px-4 py-1 text-sm rounded bg-red-50">天機錦囊</span>
-                    <span class="text-sm text-neutral-500 tracking-wider font-bold">雙盲盒抽取結果</span>
+                    <span class="seal-stamp px-4 py-1 text-sm rounded bg-red-50">語調錦囊</span>
+                    <span class="text-sm text-neutral-500 tracking-wider font-bold">盲盒抽取結果</span>
                 </div>
                 <!-- 語調大徽章（點擊可單獨重新抽取語調！） -->
                 <div class="flex items-center gap-3">
@@ -111,7 +111,7 @@
                     <span>👏 演繹完美！給予掌聲與音效</span>
                 </button>
                 <button onclick="startLottery()" class="px-8 py-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-lg rounded-xl transition-all cursor-pointer tracking-wider border border-neutral-300">
-                    🔄 再抽一次雙盲盒
+                    🔄 再抽一次盲盒
                 </button>
             </div>
         </div>
@@ -263,7 +263,7 @@
         // 隨機雙重抽獎（句子隨機 + 語調隨機）
         function startLottery() {
             const btn = document.getElementById('lottery-btn');
-            if(btn) btn.innerText = "🎲 雙重盲盒轉動中……";
+            if(btn) btn.innerText = "🎲 重盲盒轉動中……";
 
             currentSentenceIndex = Math.floor(Math.random() * sentences.length);
             
